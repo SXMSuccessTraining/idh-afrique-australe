@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Jeu IDH Afrique Australe</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Associe chaque pays à sa catégorie d’IDH</h1>
+
+  <!-- Palette de pastilles -->
+  <div id="palette">
+    <div class="pastille" data-categorie="IDH très élevé (≥ 0,800)" style="background-color: #00429d;"></div>
+    <div class="pastille" data-categorie="IDH élevé (0,700 – 0,799)" style="background-color: #73a2c6;"></div>
+    <div class="pastille" data-categorie="IDH moyen (0,550 – 0,699)" style="background-color: #fdb863;"></div>
+    <div class="pastille" data-categorie="IDH faible (< 0,550)" style="background-color: #93003a;"></div>
+  </div>
+
+  <!-- Carte SVG -->
+  <div id="svg-container">
+    <object type="image/svg+xml" data="assets/carte_jeu.svg" id="carte" width="45%"></object>
+  </div>
+
+  <!-- Zone d’affichage de la pastille sélectionnée -->
+  <div id="selection"></div>
+
+  <!-- Feedback après clic -->
+  <div id="feedback"></div>
+
+  <!-- Script principal -->
+  <script src="script.js"></script>
+</body>
+</html>

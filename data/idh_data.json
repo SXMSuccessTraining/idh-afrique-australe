@@ -1,0 +1,52 @@
+{
+    "Malawi": {
+        "nom_fr": "Malawi",
+        "idh": 0.508,
+        "categorie": "IDH faible (< 0,550)"
+    },
+    "Namibia": {
+        "nom_fr": "Namibie",
+        "idh": 0.61,
+        "categorie": "IDH moyen (0,550 – 0,699)"
+    },
+    "South Africa": {
+        "nom_fr": "Afrique du Sud",
+        "idh": 0.717,
+        "categorie": "IDH élevé (0,700 – 0,799)"
+    },
+    "Zambia": {
+        "nom_fr": "Zambie",
+        "idh": 0.609,
+        "categorie": "IDH moyen (0,550 – 0,699)"
+    },
+    "Angola": {
+        "nom_fr": "Angola",
+        "idh": 0.591,
+        "categorie": "IDH moyen (0,550 – 0,699)"
+    },
+    "Botswana": {
+        "nom_fr": "Botswana",
+        "idh": 0.708,
+        "categorie": "IDH élevé (0,700 – 0,799)"
+    },
+    "Zimbabwe": {
+        "nom_fr": "Zimbabwe",
+        "idh": 0.55,
+        "categorie": "IDH moyen (0,550 – 0,699)"
+    },
+    "Mozambique": {
+        "nom_fr": "Mozambique",
+        "idh": 0.461,
+        "categorie": "IDH faible (< 0,550)"
+    },
+    "Lesotho": {
+        "nom_fr": "Lesotho",
+        "idh": 0.521,
+        "categorie": "IDH faible (< 0,550)"
+    },
+    "Seychelles": {
+        "nom_fr": "Seychelles",
+        "idh": 0.802,
+        "categorie": "IDH très élevé (≥ 0,800)"
+    }
+}
