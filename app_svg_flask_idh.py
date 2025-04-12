@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    shapefile_path = "assets/ne_10m_admin_0_countries/ne_10m_admin_0_countries.shp"
+    shapefile_path = "assets/ne_10m_admin_0_countries.shp"
     gdf = gpd.read_file(shapefile_path)
 
     idh_data = {
@@ -46,7 +46,11 @@ def index():
     fig.savefig(buffer, format='svg', bbox_inches='tight')
     plt.close(fig)
     svg = buffer.getvalue()
-    svg_content = '\n'.join(svg.split('\n')[4:])
+
+    # Extraire proprement le SVG pour qu'il soit intégré dans la page HTML
+    start = svg.find("<svg")
+    end = svg.find("</svg>") + len("</svg>")
+    svg_content = svg[start:end]
 
     html_template = f"""
     <!DOCTYPE html>
@@ -59,7 +63,7 @@ def index():
     <body>
         <h1>Associe chaque pays à sa catégorie d'IDH</h1>
         <div id="palette">
-            <div class="pastille" data-cat="IDH très élevé (\u2265 0,800)" style="background-color:#00429d"></div>
+            <div class="pastille" data-cat="IDH très élevé (≥ 0,800)" style="background-color:#00429d"></div>
             <div class="pastille" data-cat="IDH élevé (0,700 – 0,799)" style="background-color:#73a2c6"></div>
             <div class="pastille" data-cat="IDH moyen (0,550 – 0,699)" style="background-color:#fdb863"></div>
             <div class="pastille" data-cat="IDH faible (< 0,550)" style="background-color:#93003a"></div>
