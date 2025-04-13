@@ -1,0 +1,4 @@
+Flask>=2.0
+geopandas>=0.10
+svgwrite>=1.4
+shapely>=1.8

@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: idh-afrique-australe
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app_svg_flask_idh.py
+    plan: free
