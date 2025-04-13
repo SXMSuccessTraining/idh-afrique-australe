@@ -5,14 +5,14 @@ from shapely.geometry import Point, MultiPolygon
 import io
 import json
 import re
+import os
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
-    import os
-basedir = os.path.abspath(os.path.dirname(__file__))
-shapefile_path = os.path.join(basedir, "assets", "ne_10m_admin_0_countries.shp")
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    shapefile_path = os.path.join(basedir, "assets", "ne_10m_admin_0_countries.shp")
     gdf = gpd.read_file(shapefile_path)
 
     idh_data = {
@@ -52,7 +52,6 @@ shapefile_path = os.path.join(basedir, "assets", "ne_10m_admin_0_countries.shp")
     for _, row in gdf_af.iterrows():
         shape = row.geometry
         name = row['NAME']
-        # Forcer l'ID Angola tel quel (évite un bug JS)
         if name == "Angola":
             country_id = "Angola"
         else:
@@ -70,7 +69,6 @@ shapefile_path = os.path.join(basedir, "assets", "ne_10m_admin_0_countries.shp")
         cy = height - (centroid.y - miny) * scale_y
         dwg.add(dwg.text(label, insert=(cx, cy), font_size="8px", text_anchor="middle", fill="black"))
 
-    # Point circulaire interactif pour les Seychelles
     seychelles = Point(55.45, -4.6)
     x = (seychelles.x - minx) * scale_x
     y = height - (seychelles.y - miny) * scale_y
