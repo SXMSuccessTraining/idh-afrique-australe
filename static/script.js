@@ -11,7 +11,7 @@ document.querySelectorAll('.pastille').forEach(pastille => {
     pastille.addEventListener('click', () => {
         selectedColor = pastille.style.backgroundColor;
         selectedCategory = pastille.dataset.cat;
-        document.getElementById('feedback').innerText = Pastille sélectionnée : ${selectedCategory};
+        document.getElementById('feedback').innerText = `Pastille sélectionnée : ${selectedCategory}`;
     });
 });
 
@@ -25,9 +25,14 @@ fetch('/data/idh')
         document.querySelectorAll("path, circle").forEach(el => {
             const id = el.id;
 
-            // Rechercher l'entrée qui correspond au nom nettoyé
-            const pays = Object.values(idhData).find(obj => sanitizeId(obj.nom_fr) === id || sanitizeId(Object.keys(idhData).find(k => id === sanitizeId(k))) === id);
+            // Rechercher l'entrée correspondante
+            const pays = Object.entries(idhData).find(([key, value]) =>
+                sanitizeId(key) === id || sanitizeId(value.nom_fr) === id
+            );
+
             if (!pays) return;
+
+            const [code, info] = pays;
 
             el.addEventListener('click', () => {
                 if (!selectedColor || !selectedCategory) {
@@ -37,10 +42,10 @@ fetch('/data/idh')
 
                 el.setAttribute('fill', selectedColor);
 
-                const bonneReponse = pays.categorie;
+                const bonneReponse = info.categorie;
                 const message = (bonneReponse === selectedCategory)
-                    ? ✅ Bonne réponse pour ${pays.nom_fr}
-                    : ❌ Mauvaise réponse pour ${pays.nom_fr}. Catégorie attendue : ${bonneReponse};
+                    ? `✅ Bonne réponse pour ${info.nom_fr}`
+                    : `❌ Mauvaise réponse pour ${info.nom_fr}. Catégorie attendue : ${bonneReponse}`;
 
                 document.getElementById('feedback').innerText = message;
             });
