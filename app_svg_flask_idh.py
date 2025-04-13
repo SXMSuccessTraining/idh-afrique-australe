@@ -10,7 +10,9 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    shapefile_path = r"C:\\Users\\sully\\OneDrive\\IA PEDAGOGIQUE\\JEU IDH AFRIQUE AUSTRALE\\idh-afrique-australe\\assets\\ne_10m_admin_0_countries.shp"
+    import os
+basedir = os.path.abspath(os.path.dirname(__file__))
+shapefile_path = os.path.join(basedir, "assets", "ne_10m_admin_0_countries.shp")
     gdf = gpd.read_file(shapefile_path)
 
     idh_data = {
