@@ -5,14 +5,16 @@ from shapely.geometry import Point, MultiPolygon
 import io
 import json
 import re
+import os
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
-    shapefile_path = r"C:\\Users\\sully\\OneDrive\\IA PEDAGOGIQUE\\JEU IDH AFRIQUE AUSTRALE\\idh-afrique-australe\\assets\\ne_10m_admin_0_countries.shp"
+    # ✅ Correction ici : chemin relatif compatible Render
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    shapefile_path = os.path.join(basedir, "assets", "ne_10m_admin_0_countries.shp")
     gdf = gpd.read_file(shapefile_path)
-
     idh_data = {
         "South Africa": (0.717, "Afrique du Sud"),
         "Angola": (0.591, "Angola"),
