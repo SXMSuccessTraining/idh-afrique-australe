@@ -1,50 +1,48 @@
 let selectedColor = null;
 let selectedCategory = null;
-let idhData = {};
 
-fetch("/data/idh")
-  .then((response) => response.json())
-  .then((data) => {
-    idhData = data;
-  });
+// Fonction pour "nettoyer" un nom comme le fait sanitize_id en Python
+function sanitizeId(str) {
+    return str.replace(/[^a-zA-Z0-9_-]/g, '_');
+}
 
-document.querySelectorAll(".pastille").forEach((p) => {
-  p.addEventListener("click", () => {
-    selectedColor = getComputedStyle(p).backgroundColor;
-    selectedCategory = p.getAttribute("data-cat");
-    document.querySelectorAll(".pastille").forEach((el) =>
-      el.classList.remove("selected")
-    );
-    p.classList.add("selected");
-    document.getElementById("feedback").textContent = "";
-  });
+// Sélection d'une pastille
+document.querySelectorAll('.pastille').forEach(pastille => {
+    pastille.addEventListener('click', () => {
+        selectedColor = pastille.style.backgroundColor;
+        selectedCategory = pastille.dataset.cat;
+        document.getElementById('feedback').innerText = `Pastille sélectionnée : ${selectedCategory}`;
+    });
 });
 
-document.querySelectorAll("path").forEach((p) => {
-  p.style.cursor = "pointer";
-  p.addEventListener("click", () => {
-    if (!selectedCategory || !selectedColor) {
-      document.getElementById("feedback").textContent =
-        "👉 Sélectionne une pastille avant de cliquer sur un pays.";
-      document.getElementById("feedback").style.color = "orange";
-      return;
-    }
+// Données IDH depuis le backend
+fetch('/data/idh')
+    .then(response => response.json())
+    .then(data => {
+        const idhData = data;
 
-    const countryId = p.getAttribute("id");
-    const pays = idhData[countryId];
+        // Sélectionne tous les pays (paths et cercles comme Seychelles)
+        document.querySelectorAll("path, circle").forEach(el => {
+            const id = el.id;
 
-    if (!pays) {
-      document.getElementById("feedback").textContent = "Pays non reconnu.";
-      return;
-    }
+            // Rechercher l'entrée qui correspond au nom nettoyé
+            const pays = Object.values(idhData).find(obj => sanitizeId(obj.nom_fr) === id || sanitizeId(Object.keys(idhData).find(k => id === sanitizeId(k))) === id);
+            if (!pays) return;
 
-    if (pays.categorie === selectedCategory) {
-      p.setAttribute("fill", selectedColor);
-      document.getElementById("feedback").textContent = `✅ ${pays.nom_fr} : bonne réponse !`;
-      document.getElementById("feedback").style.color = "green";
-    } else {
-      document.getElementById("feedback").textContent = `❌ ${pays.nom_fr} : incorrect.`;
-      document.getElementById("feedback").style.color = "red";
-    }
-  });
-});
+            el.addEventListener('click', () => {
+                if (!selectedColor || !selectedCategory) {
+                    document.getElementById('feedback').innerText = "Sélectionne une pastille d'abord.";
+                    return;
+                }
+
+                el.setAttribute('fill', selectedColor);
+
+                const bonneReponse = pays.categorie;
+                const message = (bonneReponse === selectedCategory)
+                    ? `✅ Bonne réponse pour ${pays.nom_fr}`
+                    : `❌ Mauvaise réponse pour ${pays.nom_fr}. Catégorie attendue : ${bonneReponse}`;
+
+                document.getElementById('feedback').innerText = message;
+            });
+        });
+    });
