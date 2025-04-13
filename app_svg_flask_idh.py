@@ -15,6 +15,7 @@ def index():
     basedir = os.path.abspath(os.path.dirname(__file__))
     shapefile_path = os.path.join(basedir, "assets", "ne_10m_admin_0_countries.shp")
     gdf = gpd.read_file(shapefile_path)
+
     idh_data = {
         "South Africa": (0.717, "Afrique du Sud"),
         "Angola": (0.591, "Angola"),
@@ -52,11 +53,7 @@ def index():
     for _, row in gdf_af.iterrows():
         shape = row.geometry
         name = row['NAME']
-        # Forcer l'ID Angola tel quel (évite un bug JS)
-        if name == "Angola":
-            country_id = "Angola"
-        else:
-            country_id = sanitize_id(name)
+        country_id = "Angola" if name == "Angola" else sanitize_id(name)
         label = row['Nom_FR']
         if shape.geom_type == 'MultiPolygon':
             for polygon in shape.geoms:
@@ -142,5 +139,7 @@ def get_idh():
     }
     return jsonify(idh_data)
 
+# ✅ Config Render compatible
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=False, host='0.0.0.0', port=port)
