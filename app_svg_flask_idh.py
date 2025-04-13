@@ -49,21 +49,28 @@ def index():
     dwg = svgwrite.Drawing(size=(f"{width}px", f"{height}px"))
     dwg.add(dwg.rect(insert=(0, 0), size=(width, height), fill='#f4f4f4'))
 
+    shape_counter = {}
+
     for _, row in gdf_af.iterrows():
         shape = row.geometry
         name = row['NAME']
-        if name == "Angola":
-            country_id = "Angola"
-        else:
-            country_id = sanitize_id(name)
+        country_id = sanitize_id(name)
         label = row['Nom_FR']
+
+        shape_counter[country_id] = shape_counter.get(country_id, 0)
+
+        def make_unique_id(base):
+            shape_counter[base] += 1
+            return f"{base}_{shape_counter[base]}"
+
         if shape.geom_type == 'MultiPolygon':
             for polygon in shape.geoms:
                 path = svg_path_from_poly(polygon, minx, miny, scale_x, scale_y, height)
-                dwg.add(dwg.path(d=path, fill='white', stroke='black', id=country_id))
+                dwg.add(dwg.path(d=path, fill='white', stroke='black', id=make_unique_id(country_id), **{'data-id': country_id}))
         elif shape.geom_type == 'Polygon':
             path = svg_path_from_poly(shape, minx, miny, scale_x, scale_y, height)
-            dwg.add(dwg.path(d=path, fill='white', stroke='black', id=country_id))
+            dwg.add(dwg.path(d=path, fill='white', stroke='black', id=make_unique_id(country_id), **{'data-id': country_id}))
+
         centroid = shape.centroid
         cx = (centroid.x - minx) * scale_x
         cy = height - (centroid.y - miny) * scale_y
@@ -72,7 +79,7 @@ def index():
     seychelles = Point(55.45, -4.6)
     x = (seychelles.x - minx) * scale_x
     y = height - (seychelles.y - miny) * scale_y
-    dwg.add(dwg.circle(center=(x, y), r=5, fill='white', stroke='black', id='Seychelles'))
+    dwg.add(dwg.circle(center=(x, y), r=5, fill='white', stroke='black', id='Seychelles_1', **{'data-id': 'Seychelles'}))
 
     svg_content = dwg.tostring()
 
