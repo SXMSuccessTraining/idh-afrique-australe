@@ -1,12 +1,7 @@
 let selectedColor = null;
 let selectedCategory = null;
 
-// Fonction pour "nettoyer" un nom comme le fait sanitize_id en Python
-function sanitizeId(str) {
-    return str.replace(/[^a-zA-Z0-9_-]/g, '_');
-}
-
-// Sélection d'une pastille
+// Récupère la palette de couleurs
 document.querySelectorAll('.pastille').forEach(pastille => {
     pastille.addEventListener('click', () => {
         selectedColor = pastille.style.backgroundColor;
@@ -15,19 +10,19 @@ document.querySelectorAll('.pastille').forEach(pastille => {
     });
 });
 
-// Données IDH depuis le backend
+// Charge les vraies données IDH
+let idhData = {};
 fetch('/data/idh')
     .then(response => response.json())
     .then(data => {
-        const idhData = data;
+        idhData = data;
 
-        // Sélectionne tous les pays (paths et cercles comme Seychelles)
-        document.querySelectorAll("path, circle").forEach(el => {
-            const id = el.id;
+        // Ajoute les écouteurs sur les pays une fois les données chargées
+        document.querySelectorAll('#map path, #map circle').forEach(el => {
+            const desc = el.querySelector('desc');
+            if (!desc) return;
 
-            // Rechercher l'entrée qui correspond au nom nettoyé
-            const pays = Object.values(idhData).find(obj => sanitizeId(obj.nom_fr) === id || sanitizeId(Object.keys(idhData).find(k => id === sanitizeId(k))) === id);
-            if (!pays) return;
+            const id = desc.textContent;
 
             el.addEventListener('click', () => {
                 if (!selectedColor || !selectedCategory) {
@@ -37,10 +32,12 @@ fetch('/data/idh')
 
                 el.setAttribute('fill', selectedColor);
 
-                const bonneReponse = pays.categorie;
+                const bonneReponse = idhData[id]?.categorie;
+                const nom_fr = idhData[id]?.nom_fr || id;
+
                 const message = (bonneReponse === selectedCategory)
-                    ? `✅ Bonne réponse pour ${pays.nom_fr}`
-                    : `❌ Mauvaise réponse pour ${pays.nom_fr}. Catégorie attendue : ${bonneReponse}`;
+                    ? `✅ Bonne réponse pour ${nom_fr}`
+                    : `❌ Mauvaise réponse pour ${nom_fr}. Catégorie attendue : ${bonneReponse}`;
 
                 document.getElementById('feedback').innerText = message;
             });
